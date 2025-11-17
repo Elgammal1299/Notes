@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(del \"c:\\Users\\AhmedElgammal\\Downloads\\awesome_notes-main\\awesome_notes-main\\lib\\firebase_options.dart\" 2)",
+      "Bash(nul)",
+      "Bash(del \"c:\\Users\\AhmedElgammal\\Downloads\\awesome_notes-main\\awesome_notes-main\\android\\app\\google-services.json\" 2)",
+      "Bash(del \"c:\\Users\\AhmedElgammal\\Downloads\\awesome_notes-main\\awesome_notes-main\\ios\\firebase_app_id_file.json\" 2)",
+      "Bash(del \"c:\\Users\\AhmedElgammal\\Downloads\\awesome_notes-main\\awesome_notes-main\\ios\\Runner\\GoogleService-Info.plist\" 2)",
+      "Bash(flutter clean:*)",
+      "Bash(flutter pub get:*)",
+      "Bash(flutter analyze:*)",
+      "Bash(flutter run:*)",
+      "Bash(flutter pub cache:*)",
+      "Bash(findstr:*)",
+      "Bash(flutter pub run build_runner build:*)",
+      "Bash(adb devices:*)",
+      "Bash(flutter emulators:*)",
+      "Bash(flutter devices:*)",
+      "Bash(Out-File -Encoding ASCII flutter_input.txt)",
+      "Bash(exit 0)",
+      "Bash(keytool:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
