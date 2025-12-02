@@ -18,7 +18,7 @@ class AppLocalizations {
   ];
 
   // App Bar
-  String get appTitle => locale.languageCode == 'ar' ? 'ملاحظات رائعة 📒' : 'Awesome Notes 📒';
+  String get appTitle => locale.languageCode == 'ar' ? 'ملاحظات رائعة 📒' : 'Awesome Notes📒';
   String get newNote => locale.languageCode == 'ar' ? 'ملاحظة جديدة' : 'New Note';
   String get editNote => locale.languageCode == 'ar' ? 'تعديل الملاحظة' : 'Edit Note';
 

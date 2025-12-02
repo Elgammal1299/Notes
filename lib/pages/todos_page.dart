@@ -12,135 +12,151 @@ import 'add_or_edit_todo_page.dart';
 class TodosPage extends StatelessWidget {
   const TodosPage({super.key});
 
+  void _showFilterMenu(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cubit = context.read<TodosCubit>();
+
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(FontAwesomeIcons.list, color: primary),
+                title: Text(l10n.all),
+                onTap: () {
+                  cubit.setFilter(TodoFilter.all);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(FontAwesomeIcons.circleCheck, color: primary),
+                title: Text(l10n.active),
+                onTap: () {
+                  cubit.setFilter(TodoFilter.active);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(FontAwesomeIcons.check, color: primary),
+                title: Text(l10n.completed),
+                onTap: () {
+                  cubit.setFilter(TodoFilter.completed);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(FontAwesomeIcons.triangleExclamation, color: primary),
+                title: Text(l10n.overdue),
+                onTap: () {
+                  cubit.setFilter(TodoFilter.overdue);
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showCategoryMenu(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cubit = context.read<TodosCubit>();
+
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(FontAwesomeIcons.asterisk, color: primary),
+                title: Text(l10n.allCategories),
+                onTap: () {
+                  cubit.setCategoryFilter(null);
+                  Navigator.pop(context);
+                },
+              ),
+              const Divider(),
+              ...TodoCategory.values.map((category) {
+                return ListTile(
+                  leading: Icon(_getCategoryIcon(category), color: primary),
+                  title: Text(_getCategoryName(context, category)),
+                  onTap: () {
+                    cubit.setCategoryFilter(category);
+                    Navigator.pop(context);
+                  },
+                );
+              }),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.todos),
-        actions: [
-          // Filter menu
-          PopupMenuButton<TodoFilter>(
-            icon: const Icon(FontAwesomeIcons.filter, color: primary),
-            onSelected: (filter) {
-              context.read<TodosCubit>().setFilter(filter);
-            },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: TodoFilter.all,
-                child: Row(
-                  children: [
-                    const Icon(FontAwesomeIcons.list, size: 16),
-                    const SizedBox(width: 8),
-                    Text(l10n.all),
-                  ],
-                ),
-              ),
-              PopupMenuItem(
-                value: TodoFilter.active,
-                child: Row(
-                  children: [
-                    const Icon(FontAwesomeIcons.circleCheck, size: 16),
-                    const SizedBox(width: 8),
-                    Text(l10n.active),
-                  ],
-                ),
-              ),
-              PopupMenuItem(
-                value: TodoFilter.completed,
-                child: Row(
-                  children: [
-                    const Icon(FontAwesomeIcons.check, size: 16),
-                    const SizedBox(width: 8),
-                    Text(l10n.completed),
-                  ],
-                ),
-              ),
-              PopupMenuItem(
-                value: TodoFilter.overdue,
-                child: Row(
-                  children: [
-                    const Icon(FontAwesomeIcons.triangleExclamation, size: 16),
-                    const SizedBox(width: 8),
-                    Text(l10n.overdue),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          // Category filter menu
-          PopupMenuButton<TodoCategory?>(
-            icon: const Icon(FontAwesomeIcons.tag, color: primary),
-            onSelected: (category) {
-              context.read<TodosCubit>().setCategoryFilter(category);
-            },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: null,
-                child: Row(
-                  children: [
-                    const Icon(FontAwesomeIcons.asterisk, size: 16),
-                    const SizedBox(width: 8),
-                    Text(l10n.allCategories),
-                  ],
-                ),
-              ),
-              const PopupMenuDivider(),
-              ...TodoCategory.values.map((category) {
-                return PopupMenuItem(
-                  value: category,
-                  child: Row(
-                    children: [
-                      Icon(_getCategoryIcon(category), size: 16),
-                      const SizedBox(width: 8),
-                      Text(_getCategoryName(context, category)),
-                    ],
-                  ),
-                );
-              }),
-            ],
-          ),
-        ],
-      ),
       body: BlocBuilder<TodosCubit, TodosState>(
         builder: (context, state) {
           final cubit = context.read<TodosCubit>();
           final filteredTodos = cubit.getFilteredTodos();
 
-          if (filteredTodos.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    FontAwesomeIcons.listCheck,
-                    size: 64,
-                    color: Colors.grey[300],
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    l10n.noTodosFound,
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }
-
           return Column(
             children: [
-              // Filter chips
+              // Filter buttons
+              Container(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    // Filter menu button
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          _showFilterMenu(context);
+                        },
+                        icon: const Icon(FontAwesomeIcons.filter, size: 16),
+                        label: Text(_getFilterName(context, state.filter)),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: primary,
+                          side: const BorderSide(color: primary),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    // Category filter button
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          _showCategoryMenu(context);
+                        },
+                        icon: const Icon(FontAwesomeIcons.tag, size: 16),
+                        label: Text(
+                          state.categoryFilter != null
+                              ? _getCategoryName(context, state.categoryFilter!)
+                              : l10n.allCategories,
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: primary,
+                          side: const BorderSide(color: primary),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Active filter chips
               if (state.filter != TodoFilter.all ||
                   state.categoryFilter != null)
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Wrap(
                     spacing: 8,
                     children: [
@@ -163,22 +179,44 @@ class TodosPage extends StatelessWidget {
                     ],
                   ),
                 ),
-              // Todos list
+              // Todos list or empty state
               Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: filteredTodos.length,
-                  itemBuilder: (context, index) {
-                    final todo = filteredTodos[index];
-                    return _TodoItemCard(todo: todo);
-                  },
-                ),
+                child: filteredTodos.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              FontAwesomeIcons.listCheck,
+                              size: 64,
+                              color: Colors.grey[300],
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              l10n.noTodosFound,
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : ListView.builder(
+                        padding: const EdgeInsets.all(16),
+                        itemCount: filteredTodos.length,
+                        itemBuilder: (context, index) {
+                          final todo = filteredTodos[index];
+                          return _TodoItemCard(todo: todo);
+                        },
+                      ),
               ),
             ],
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'todoFab',
         onPressed: () {
           Navigator.push(
             context,
@@ -209,7 +247,7 @@ class TodosPage extends StatelessWidget {
   }
 
   String _getCategoryName(BuildContext context, TodoCategory category) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     switch (category) {
       case TodoCategory.personal:
         return l10n.personal;
@@ -225,7 +263,7 @@ class TodosPage extends StatelessWidget {
   }
 
   String _getFilterName(BuildContext context, TodoFilter filter) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     switch (filter) {
       case TodoFilter.all:
         return l10n.all;
@@ -246,7 +284,7 @@ class _TodoItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final cubit = context.read<TodosCubit>();
 
     return Card(
@@ -460,7 +498,7 @@ class _CategoryChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     IconData icon;
     String label;
@@ -510,7 +548,7 @@ class _DueDateChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final now = DateTime.now();
     final difference = dueDate.difference(now);
 

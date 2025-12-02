@@ -32,33 +32,18 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_currentIndex == 0 ? l10n.appTitle : l10n.todos),
-        actions: [
-          // Test notification button (for debugging)
-          NoteIconButtonOutlined(
-            icon: FontAwesomeIcons.bell,
-            onPressed: () async {
-              print('🔔 Test notification button pressed');
-              await NotificationService().showImmediateNotification(
-                title: 'Test Notification',
-                body: 'This is a test notification! إشعار تجريبي',
-              );
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Test notification sent!'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              }
-            },
-          ),
-          NoteIconButtonOutlined(
-            icon: FontAwesomeIcons.language,
-            onPressed: () {
-              context.read<LanguageCubit>().toggleLanguage();
-            },
-          ),
-        ],
+        actions: _currentIndex == 0
+            ? [
+                // Test notification button (for debugging) - Only in Notes page
+                
+                NoteIconButtonOutlined(
+                  icon: FontAwesomeIcons.language,
+                  onPressed: () {
+                    context.read<LanguageCubit>().toggleLanguage();
+                  },
+                ),
+              ]
+            : null,
       ),
       body: IndexedStack(
         index: _currentIndex,
