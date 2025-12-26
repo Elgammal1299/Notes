@@ -43,9 +43,9 @@ class NoteMetadata extends StatelessWidget {
                 flex: 5,
                 child: Text(
                   toLongDate(note!.dateModified),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: gray900,
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                   ),
                 ),
               ),
@@ -67,9 +67,9 @@ class NoteMetadata extends StatelessWidget {
                 flex: 5,
                 child: Text(
                   toLongDate(note!.dateCreated),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: gray900,
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                   ),
                 ),
               ),
@@ -94,9 +94,11 @@ class NoteMetadata extends StatelessWidget {
                   NoteIconButton(
                     icon: FontAwesomeIcons.bell,
                     onPressed: () async {
-                      final DateTime? selectedDateTime = await showDateTimePicker(
+                      final DateTime? selectedDateTime =
+                          await showDateTimePicker(
                         context: context,
-                        initialDateTime: context.read<NewNoteCubit>().state.reminderDateTime,
+                        initialDateTime:
+                            context.read<NewNoteCubit>().state.reminderDateTime,
                       );
 
                       if (selectedDateTime != null) {
@@ -124,7 +126,8 @@ class NoteMetadata extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Text(
-                                toLongDate(reminderDateTime.microsecondsSinceEpoch),
+                                toLongDate(
+                                    reminderDateTime.microsecondsSinceEpoch),
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: gray900,

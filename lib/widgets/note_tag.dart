@@ -15,12 +15,13 @@ class NoteTag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: gray100,
+          color: isDark ? const Color(0xFF3E3E3E) : gray100,
         ),
         padding: const EdgeInsets.symmetric(
           horizontal: 12,
@@ -33,7 +34,7 @@ class NoteTag extends StatelessWidget {
               label,
               style: TextStyle(
                 fontSize: onClosed != null ? 14 : 12,
-                color: gray700,
+                color: isDark ? Colors.white70 : gray700,
               ),
             ),
             if (onClosed != null) ...[

@@ -45,7 +45,7 @@ class NoteCard extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: white,
+          color: Theme.of(context).cardColor,
           border: Border.all(
             color: primary,
             width: 2,
@@ -67,10 +67,10 @@ class NoteCard extends StatelessWidget {
                 note.title!,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
-                  color: gray900,
+                  color: Theme.of(context).textTheme.titleMedium?.color,
                 ),
               ),
               const SizedBox(height: 4),
@@ -92,14 +92,18 @@ class NoteCard extends StatelessWidget {
                   ? Expanded(
                       child: Text(
                         note.content!,
-                        style: const TextStyle(color: gray700),
+                        style: TextStyle(
+                          color: Theme.of(context).textTheme.bodyMedium?.color,
+                        ),
                       ),
                     )
                   : Text(
                       note.content!,
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(color: gray700),
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
+                      ),
                     ),
             if (isInGrid) const Spacer(),
             Row(
@@ -109,10 +113,11 @@ class NoteCard extends StatelessWidget {
                     toShortDate(state.orderBy == OrderOption.dateModified
                         ? note.dateModified
                         : note.dateCreated),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: gray500,
+                      color: Theme.of(context).textTheme.bodySmall?.color ??
+                          gray500,
                     ),
                   ),
                 ),
@@ -120,8 +125,7 @@ class NoteCard extends StatelessWidget {
                 GestureDetector(
                   onTap: () async {
                     final shouldDelete = await showConfirmationDialog(
-                            context: context,
-                            title: l10n.deleteNote) ??
+                            context: context, title: l10n.deleteNote) ??
                         false;
 
                     if (shouldDelete && context.mounted) {
@@ -134,9 +138,11 @@ class NoteCard extends StatelessWidget {
                       await context.read<NotesCubit>().deleteNote(note);
                     }
                   },
-                  child: const FaIcon(
+                  child: FaIcon(
                     FontAwesomeIcons.trash,
-                    color: gray500,
+                    color:
+                        Theme.of(context).iconTheme.color?.withOpacity(0.6) ??
+                            gray500,
                     size: 16,
                   ),
                 ),

@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../core/constants.dart';
 import '../core/dialogs.dart';
 import '../cubits/new_note_cubit.dart';
 import '../cubits/new_note_state.dart';
@@ -90,7 +89,8 @@ class _NewOrEditNotePageState extends State<NewOrEditNotePage> {
 
     // Handle reminder scheduling after saving
     if (reminderDateTime != null) {
-      final reminderTime = DateTime.fromMicrosecondsSinceEpoch(reminderDateTime);
+      final reminderTime =
+          DateTime.fromMicrosecondsSinceEpoch(reminderDateTime);
       final now = DateTime.now();
       print('🔔 Reminder time: $reminderTime');
       print('🔔 Current time: $now');
@@ -212,14 +212,15 @@ class _NewOrEditNotePageState extends State<NewOrEditNotePage> {
               BlocBuilder<NewNoteCubit, NewNoteState>(
                 builder: (context, state) => TextField(
                   controller: titleController,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
+                    color: Theme.of(context).textTheme.titleLarge?.color,
                   ),
                   decoration: InputDecoration(
                     hintText: l10n.titleHere,
-                    hintStyle: const TextStyle(
-                      color: gray300,
+                    hintStyle: TextStyle(
+                      color: Theme.of(context).hintColor,
                     ),
                     border: InputBorder.none,
                   ),
@@ -236,7 +237,7 @@ class _NewOrEditNotePageState extends State<NewOrEditNotePage> {
               ),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 8.0),
-                child: Divider(color: gray500, thickness: 2),
+                child: Divider(thickness: 2),
               ),
               Expanded(
                 child: BlocBuilder<NewNoteCubit, NewNoteState>(
@@ -251,12 +252,28 @@ class _NewOrEditNotePageState extends State<NewOrEditNotePage> {
                             configurations: QuillEditorConfigurations(
                               placeholder: l10n.noteHere,
                               readOnly: state.readOnly,
+                              customStyles: DefaultStyles(
+                                paragraph: DefaultTextBlockStyle(
+                                  TextStyle(
+                                    fontSize: 16,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        ?.color,
+                                    height: 1.15,
+                                  ),
+                                  const VerticalSpacing(16, 0),
+                                  const VerticalSpacing(0, 0),
+                                  null,
+                                ),
+                              ),
                             ),
                             focusNode: focusNode,
                           ),
                         ),
                       ),
-                      if (!state.readOnly) NoteToolbar(controller: quillController),
+                      if (!state.readOnly)
+                        NoteToolbar(controller: quillController),
                     ],
                   ),
                 ),

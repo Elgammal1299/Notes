@@ -7,6 +7,8 @@ import 'core/constants.dart';
 import 'cubits/language_cubit.dart';
 import 'cubits/language_state.dart';
 import 'cubits/notes_cubit.dart';
+import 'cubits/theme_cubit.dart';
+import 'cubits/theme_state.dart';
 import 'cubits/todos_cubit.dart';
 import 'l10n/app_localizations.dart';
 import 'models/note.dart';
@@ -79,34 +81,70 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => NotesCubit(notesRepository)),
         BlocProvider(create: (context) => TodosCubit(todosRepository)),
         BlocProvider(create: (context) => LanguageCubit()),
+        BlocProvider(create: (context) => ThemeCubit()),
       ],
-      child: BlocBuilder<LanguageCubit, LanguageState>(
-        builder: (context, languageState) {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Notes',
-            locale: languageState.locale,
-            localizationsDelegates: [
-              AppLocalizations.delegate,
-              ...FlutterQuillLocalizations.localizationsDelegates,
-            ],
-            supportedLocales: AppLocalizations.supportedLocales,
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: primary),
-              useMaterial3: true,
-              fontFamily: 'Poppins',
-              scaffoldBackgroundColor: background,
-              appBarTheme: Theme.of(context).appBarTheme.copyWith(
+      child: BlocBuilder<ThemeCubit, ThemeState>(
+        builder: (context, themeState) {
+          return BlocBuilder<LanguageCubit, LanguageState>(
+            builder: (context, languageState) {
+              return MaterialApp(
+                debugShowCheckedModeBanner: false,
+                title: 'Notes',
+                locale: languageState.locale,
+                localizationsDelegates: [
+                  AppLocalizations.delegate,
+                  ...FlutterQuillLocalizations.localizationsDelegates,
+                ],
+                supportedLocales: AppLocalizations.supportedLocales,
+                themeMode: themeState.themeMode,
+                theme: ThemeData(
+                  brightness: Brightness.light,
+                  colorScheme: ColorScheme.fromSeed(
+                    seedColor: primary,
+                    brightness: Brightness.light,
+                  ),
+                  useMaterial3: true,
+                  fontFamily: 'Poppins',
+                  scaffoldBackgroundColor: background,
+                  appBarTheme: const AppBarTheme(
                     backgroundColor: background,
-                    titleTextStyle: const TextStyle(
+                    titleTextStyle: TextStyle(
                       color: primary,
                       fontSize: 32,
                       fontFamily: 'Fredoka',
                       fontWeight: FontWeight.w600,
                     ),
+                    iconTheme: IconThemeData(color: black),
                   ),
-            ),
-            home: const MainPage(),
+                ),
+                darkTheme: ThemeData(
+                  brightness: Brightness.dark,
+                  colorScheme: ColorScheme.fromSeed(
+                    seedColor: primary,
+                    brightness: Brightness.dark,
+                  ),
+                  useMaterial3: true,
+                  fontFamily: 'Poppins',
+                  scaffoldBackgroundColor: const Color(0xFF121212),
+                  appBarTheme: const AppBarTheme(
+                    backgroundColor: Color(0xFF121212),
+                    titleTextStyle: TextStyle(
+                      color: primary,
+                      fontSize: 32,
+                      fontFamily: 'Fredoka',
+                      fontWeight: FontWeight.w600,
+                    ),
+                    iconTheme: IconThemeData(color: white),
+                  ),
+                  bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+                    backgroundColor: Color(0xFF1E1E1E),
+                    selectedItemColor: primary,
+                    unselectedItemColor: Colors.grey,
+                  ),
+                ),
+                home: const MainPage(),
+              );
+            },
           );
         },
       ),

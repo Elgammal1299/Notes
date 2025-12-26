@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../core/constants.dart';
-import '../cubits/language_cubit.dart';
 import '../l10n/app_localizations.dart';
 import '../services/notification_service.dart';
-import '../widgets/note_icon_button_outlined.dart';
+import '../widgets/settings_drawer.dart';
 import 'notes_page.dart';
 import 'todos_page.dart';
 
@@ -35,16 +33,10 @@ class _MainPageState extends State<MainPage> {
         actions: _currentIndex == 0
             ? [
                 // Test notification button (for debugging) - Only in Notes page
-                
-                NoteIconButtonOutlined(
-                  icon: FontAwesomeIcons.language,
-                  onPressed: () {
-                    context.read<LanguageCubit>().toggleLanguage();
-                  },
-                ),
               ]
             : null,
       ),
+      drawer: const SettingsDrawer(),
       body: IndexedStack(
         index: _currentIndex,
         children: _pages,

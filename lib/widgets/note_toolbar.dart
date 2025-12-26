@@ -20,7 +20,7 @@ class NoteToolbar extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 8),
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
-          color: white,
+          color: Theme.of(context).cardColor,
           border: Border.all(
             color: primary,
             strokeAlign: BorderSide.strokeAlignOutside,
