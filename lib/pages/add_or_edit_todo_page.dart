@@ -8,6 +8,8 @@ import '../cubits/todos_cubit.dart';
 import '../l10n/app_localizations.dart';
 import '../models/todo.dart';
 import '../widgets/note_icon_button_outlined.dart';
+import '../widgets/banner_ad_widget.dart';
+import '../services/ad_helper.dart';
 
 class AddOrEditTodoPage extends StatefulWidget {
   final Todo? todo;
@@ -96,6 +98,10 @@ class _AddOrEditTodoPageState extends State<AddOrEditTodoPage> {
     final cubit = context.read<TodosCubit>();
     if (widget.isNewTodo) {
       cubit.addTodo(todo);
+      // Show Video Ad for new Todo
+      AdHelper.showRewardedAd(onUserEarnedReward: () {
+        if (mounted) Navigator.pop(context);
+      });
     } else {
       // For existing todos, we need to preserve the HiveObject reference
       final existingTodo = widget.todo!;
@@ -110,9 +116,9 @@ class _AddOrEditTodoPageState extends State<AddOrEditTodoPage> {
       existingTodo.isRecurring = todo.isRecurring;
       existingTodo.recurringPattern = todo.recurringPattern;
       cubit.updateTodo(existingTodo);
+      Navigator.pop(context);
     }
 
-    Navigator.pop(context);
   }
 
   void _deleteTodo() {
@@ -236,293 +242,300 @@ class _AddOrEditTodoPageState extends State<AddOrEditTodoPage> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Title
-            TextField(
-              controller: _titleController,
-              decoration: InputDecoration(
-                labelText: l10n.todoTitle,
-                hintText: l10n.todoTitleHint,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                prefixIcon: const Icon(FontAwesomeIcons.heading),
-              ),
-              textCapitalization: TextCapitalization.sentences,
-              onChanged: (_) => setState(() {}),
-            ),
-            const SizedBox(height: 16),
-
-            // Description
-            TextField(
-              controller: _descriptionController,
-              decoration: InputDecoration(
-                labelText: l10n.todoDescription,
-                hintText: l10n.todoDescriptionHint,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                prefixIcon: const Icon(FontAwesomeIcons.alignLeft),
-              ),
-              maxLines: 3,
-              textCapitalization: TextCapitalization.sentences,
-            ),
-            const SizedBox(height: 24),
-
-            // Priority
-            _SectionTitle(title: l10n.priority),
-            const SizedBox(height: 8),
-            SegmentedButton<TodoPriority>(
-              segments: [
-                ButtonSegment(
-                  value: TodoPriority.low,
-                  label: Text(l10n.lowPriority),
-                  icon: const Icon(FontAwesomeIcons.arrowDown, size: 16),
-                ),
-                ButtonSegment(
-                  value: TodoPriority.medium,
-                  label: Text(l10n.mediumPriority),
-                  icon: const Icon(FontAwesomeIcons.equals, size: 16),
-                ),
-                ButtonSegment(
-                  value: TodoPriority.high,
-                  label: Text(l10n.highPriority),
-                  icon: const Icon(FontAwesomeIcons.arrowUp, size: 16),
-                ),
-              ],
-              selected: {_selectedPriority},
-              onSelectionChanged: (newSelection) {
-                setState(() {
-                  _selectedPriority = newSelection.first;
-                });
-              },
-            ),
-            const SizedBox(height: 24),
-
-            // Category
-            _SectionTitle(title: l10n.category),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: TodoCategory.values.map((category) {
-                final isSelected = _selectedCategory == category;
-                return ChoiceChip(
-                  label: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(_getCategoryIcon(category), size: 16),
-                      const SizedBox(width: 8),
-                      Text(_getCategoryName(category)),
-                    ],
-                  ),
-                  selected: isSelected,
-                  onSelected: (_) {
-                    setState(() {
-                      _selectedCategory = category;
-                    });
-                  },
-                  selectedColor: primary.withValues(alpha: 0.3),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 24),
-
-            // Due Date
-            _SectionTitle(title: l10n.dueDate),
-            const SizedBox(height: 8),
-            InkWell(
-              onTap: _selectDueDate,
-              borderRadius: BorderRadius.circular(12),
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade300),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(FontAwesomeIcons.calendar, color: primary),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Text(
-                        _dueDate != null
-                            ? DateFormat('MMM dd, yyyy - hh:mm a').format(_dueDate!)
-                            : l10n.selectDueDate,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: _dueDate != null ? Colors.black87 : Colors.grey,
-                        ),
-                      ),
-                    ),
-                    if (_dueDate != null)
-                      IconButton(
-                        icon: const Icon(FontAwesomeIcons.xmark, size: 16),
-                        onPressed: () {
-                          setState(() {
-                            _dueDate = null;
-                          });
-                        },
-                      ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // Reminder
-            _SectionTitle(title: l10n.reminder),
-            const SizedBox(height: 8),
-            InkWell(
-              onTap: _selectReminderDateTime,
-              borderRadius: BorderRadius.circular(12),
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade300),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(FontAwesomeIcons.bell, color: primary),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Text(
-                        _reminderDateTime != null
-                            ? DateFormat('MMM dd, yyyy - hh:mm a')
-                                .format(_reminderDateTime!)
-                            : l10n.noReminderSet,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: _reminderDateTime != null
-                              ? Colors.black87
-                              : Colors.grey,
-                        ),
-                      ),
-                    ),
-                    if (_reminderDateTime != null)
-                      IconButton(
-                        icon: const Icon(FontAwesomeIcons.xmark, size: 16),
-                        onPressed: () {
-                          setState(() {
-                            _reminderDateTime = null;
-                          });
-                        },
-                      ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // Recurring
-            Row(
-              children: [
-                Expanded(child: _SectionTitle(title: l10n.recurringTask)),
-                Switch(
-                  value: _isRecurring,
-                  onChanged: (value) {
-                    setState(() {
-                      _isRecurring = value;
-                      if (!value) _recurringPattern = null;
-                    });
-                  },
-                  activeTrackColor: primary,
-                ),
-              ],
-            ),
-            if (_isRecurring) ...[
-              const SizedBox(height: 8),
-              DropdownButtonFormField<String>(
-                initialValue: _recurringPattern,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  prefixIcon: const Icon(FontAwesomeIcons.rotate),
-                ),
-                hint: Text(l10n.selectPattern),
-                items: [
-                  DropdownMenuItem(value: 'daily', child: Text(l10n.daily)),
-                  DropdownMenuItem(value: 'weekly', child: Text(l10n.weekly)),
-                  DropdownMenuItem(value: 'monthly', child: Text(l10n.monthly)),
-                ],
-                onChanged: (value) {
-                  setState(() {
-                    _recurringPattern = value;
-                  });
-                },
-              ),
-            ],
-            const SizedBox(height: 24),
-
-            // Subtasks
-            _SectionTitle(title: l10n.subtasks),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _subtaskController,
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Title
+                  TextField(
+                    controller: _titleController,
                     decoration: InputDecoration(
-                      hintText: l10n.addSubtask,
+                      labelText: l10n.todoTitle,
+                      hintText: l10n.todoTitleHint,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      prefixIcon: const Icon(FontAwesomeIcons.listCheck),
+                      prefixIcon: const Icon(FontAwesomeIcons.heading),
                     ),
                     textCapitalization: TextCapitalization.sentences,
-                    onSubmitted: (_) => _addSubtask(),
+                    onChanged: (_) => setState(() {}),
                   ),
-                ),
-                const SizedBox(width: 8),
-                IconButton.filled(
-                  onPressed: _addSubtask,
-                  icon: const Icon(FontAwesomeIcons.plus),
-                  style: IconButton.styleFrom(
-                    backgroundColor: primary,
-                    foregroundColor: Colors.white,
+                  const SizedBox(height: 16),
+
+                  // Description
+                  TextField(
+                    controller: _descriptionController,
+                    decoration: InputDecoration(
+                      labelText: l10n.todoDescription,
+                      hintText: l10n.todoDescriptionHint,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      prefixIcon: const Icon(FontAwesomeIcons.alignLeft),
+                    ),
+                    maxLines: 3,
+                    textCapitalization: TextCapitalization.sentences,
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            if (_subtasks.isNotEmpty)
-              ...List.generate(_subtasks.length, (index) {
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 8),
-                  child: ListTile(
-                    leading: Checkbox(
-                      value: _subtasksCompleted[index],
+                  const SizedBox(height: 24),
+
+                  // Priority
+                  _SectionTitle(title: l10n.priority),
+                  const SizedBox(height: 8),
+                  SegmentedButton<TodoPriority>(
+                    segments: [
+                      ButtonSegment(
+                        value: TodoPriority.low,
+                        label: Text(l10n.lowPriority),
+                        icon: const Icon(FontAwesomeIcons.arrowDown, size: 16),
+                      ),
+                      ButtonSegment(
+                        value: TodoPriority.medium,
+                        label: Text(l10n.mediumPriority),
+                        icon: const Icon(FontAwesomeIcons.equals, size: 16),
+                      ),
+                      ButtonSegment(
+                        value: TodoPriority.high,
+                        label: Text(l10n.highPriority),
+                        icon: const Icon(FontAwesomeIcons.arrowUp, size: 16),
+                      ),
+                    ],
+                    selected: {_selectedPriority},
+                    onSelectionChanged: (newSelection) {
+                      setState(() {
+                        _selectedPriority = newSelection.first;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Category
+                  _SectionTitle(title: l10n.category),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: TodoCategory.values.map((category) {
+                      final isSelected = _selectedCategory == category;
+                      return ChoiceChip(
+                        label: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(_getCategoryIcon(category), size: 16),
+                            const SizedBox(width: 8),
+                            Text(_getCategoryName(category)),
+                          ],
+                        ),
+                        selected: isSelected,
+                        onSelected: (_) {
+                          setState(() {
+                            _selectedCategory = category;
+                          });
+                        },
+                        selectedColor: primary.withValues(alpha: 0.3),
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Due Date
+                  _SectionTitle(title: l10n.dueDate),
+                  const SizedBox(height: 8),
+                  InkWell(
+                    onTap: _selectDueDate,
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(FontAwesomeIcons.calendar, color: primary),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Text(
+                              _dueDate != null
+                                  ? DateFormat('MMM dd, yyyy - hh:mm a').format(_dueDate!)
+                                  : l10n.selectDueDate,
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: _dueDate != null ? Colors.black87 : Colors.grey,
+                              ),
+                            ),
+                          ),
+                          if (_dueDate != null)
+                            IconButton(
+                              icon: const Icon(FontAwesomeIcons.xmark, size: 16),
+                              onPressed: () {
+                                setState(() {
+                                  _dueDate = null;
+                                });
+                              },
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Reminder
+                  _SectionTitle(title: l10n.reminder),
+                  const SizedBox(height: 8),
+                  InkWell(
+                    onTap: _selectReminderDateTime,
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(FontAwesomeIcons.bell, color: primary),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Text(
+                              _reminderDateTime != null
+                                  ? DateFormat('MMM dd, yyyy - hh:mm a')
+                                      .format(_reminderDateTime!)
+                                  : l10n.noReminderSet,
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: _reminderDateTime != null
+                                    ? Colors.black87
+                                    : Colors.grey,
+                              ),
+                            ),
+                          ),
+                          if (_reminderDateTime != null)
+                            IconButton(
+                              icon: const Icon(FontAwesomeIcons.xmark, size: 16),
+                              onPressed: () {
+                                setState(() {
+                                  _reminderDateTime = null;
+                                });
+                              },
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Recurring
+                  Row(
+                    children: [
+                      Expanded(child: _SectionTitle(title: l10n.recurringTask)),
+                      Switch(
+                        value: _isRecurring,
+                        onChanged: (value) {
+                          setState(() {
+                            _isRecurring = value;
+                            if (!value) _recurringPattern = null;
+                          });
+                        },
+                        activeTrackColor: primary,
+                      ),
+                    ],
+                  ),
+                  if (_isRecurring) ...[
+                    const SizedBox(height: 8),
+                    DropdownButtonFormField<String>(
+                      initialValue: _recurringPattern,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        prefixIcon: const Icon(FontAwesomeIcons.rotate),
+                      ),
+                      hint: Text(l10n.selectPattern),
+                      items: [
+                        DropdownMenuItem(value: 'daily', child: Text(l10n.daily)),
+                        DropdownMenuItem(value: 'weekly', child: Text(l10n.weekly)),
+                        DropdownMenuItem(value: 'monthly', child: Text(l10n.monthly)),
+                      ],
                       onChanged: (value) {
                         setState(() {
-                          _subtasksCompleted[index] = value ?? false;
+                          _recurringPattern = value;
                         });
                       },
                     ),
-                    title: Text(
-                      _subtasks[index],
-                      style: TextStyle(
-                        decoration: _subtasksCompleted[index]
-                            ? TextDecoration.lineThrough
-                            : null,
+                  ],
+                  const SizedBox(height: 24),
+
+                  // Subtasks
+                  _SectionTitle(title: l10n.subtasks),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _subtaskController,
+                          decoration: InputDecoration(
+                            hintText: l10n.addSubtask,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            prefixIcon: const Icon(FontAwesomeIcons.listCheck),
+                          ),
+                          textCapitalization: TextCapitalization.sentences,
+                          onSubmitted: (_) => _addSubtask(),
+                        ),
                       ),
-                    ),
-                    trailing: IconButton(
-                      icon: const Icon(FontAwesomeIcons.trash, size: 16),
-                      onPressed: () => _removeSubtask(index),
-                      color: Colors.red,
-                    ),
+                      const SizedBox(width: 8),
+                      IconButton.filled(
+                        onPressed: _addSubtask,
+                        icon: const Icon(FontAwesomeIcons.plus),
+                        style: IconButton.styleFrom(
+                          backgroundColor: primary,
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
+                    ],
                   ),
-                );
-              }),
-            const SizedBox(height: 32),
-          ],
-        ),
+                  const SizedBox(height: 16),
+                  if (_subtasks.isNotEmpty)
+                    ...List.generate(_subtasks.length, (index) {
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 8),
+                        child: ListTile(
+                          leading: Checkbox(
+                            value: _subtasksCompleted[index],
+                            onChanged: (value) {
+                              setState(() {
+                                _subtasksCompleted[index] = value ?? false;
+                              });
+                            },
+                          ),
+                          title: Text(
+                            _subtasks[index],
+                            style: TextStyle(
+                              decoration: _subtasksCompleted[index]
+                                  ? TextDecoration.lineThrough
+                                  : null,
+                            ),
+                          ),
+                          trailing: IconButton(
+                            icon: const Icon(FontAwesomeIcons.trash, size: 16),
+                            onPressed: () => _removeSubtask(index),
+                            color: Colors.red,
+                          ),
+                        ),
+                      );
+                    }),
+                  const SizedBox(height: 32),
+                ],
+              ),
+            ),
+          ),
+          BannerAdWidget(customAdUnitId: AdHelper.bannerAdUnitId2),
+        ],
       ),
     );
   }

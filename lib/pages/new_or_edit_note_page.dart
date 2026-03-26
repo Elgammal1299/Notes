@@ -13,6 +13,8 @@ import '../widgets/note_back_button.dart';
 import '../widgets/note_icon_button_outlined.dart';
 import '../widgets/note_metadata.dart';
 import '../widgets/note_toolbar.dart';
+import '../widgets/banner_ad_widget.dart';
+import '../services/ad_helper.dart';
 
 class NewOrEditNotePage extends StatefulWidget {
   const NewOrEditNotePage({
@@ -196,6 +198,7 @@ class _NewOrEditNotePageState extends State<NewOrEditNotePage> {
                   onPressed: canSaveNote
                       ? () async {
                           await _saveNoteWithReminder();
+                          AdHelper.showInterstitialAd();
                           if (!context.mounted) return;
                           Navigator.pop(context);
                         }
@@ -278,6 +281,7 @@ class _NewOrEditNotePageState extends State<NewOrEditNotePage> {
                   ),
                 ),
               ),
+              BannerAdWidget(customAdUnitId: AdHelper.bannerAdUnitId2),
             ],
           ),
         ),

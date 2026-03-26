@@ -5,6 +5,7 @@ import '../core/constants.dart';
 import '../l10n/app_localizations.dart';
 import '../services/notification_service.dart';
 import '../widgets/settings_drawer.dart';
+import '../widgets/banner_ad_widget.dart';
 import 'notes_page.dart';
 import 'todos_page.dart';
 
@@ -37,9 +38,16 @@ class _MainPageState extends State<MainPage> {
             : null,
       ),
       drawer: const SettingsDrawer(),
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _pages,
+      body: Column(
+        children: [
+          Expanded(
+            child: IndexedStack(
+              index: _currentIndex,
+              children: _pages,
+            ),
+          ),
+          const BannerAdWidget(),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
