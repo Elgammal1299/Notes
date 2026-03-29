@@ -46,7 +46,7 @@ class AdHelper {
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
           ad.fullScreenContentCallback = FullScreenContentCallback(
-            onAdDismissedFullScreenContent: (ad) {
+            onAdDismissedFullScreenContent:  (ad) {
               ad.dispose();
             },
             onAdFailedToShowFullScreenContent: (ad, err) {
