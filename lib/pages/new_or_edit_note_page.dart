@@ -32,7 +32,6 @@ class _NewOrEditNotePageState extends State<NewOrEditNotePage> {
   late final NewNoteCubit newNoteCubit;
   late final TextEditingController titleController;
   late final QuillController quillController;
-
   late final FocusNode focusNode;
 
   @override
@@ -76,17 +75,11 @@ class _NewOrEditNotePageState extends State<NewOrEditNotePage> {
     final notesCubit = context.read<NotesCubit>();
     final reminderDateTime = note.reminderDateTime;
 
-    print('🔔 _saveNoteWithReminder: Starting save process');
-    print('🔔 Note title: ${note.title}');
-    print('🔔 Reminder dateTime: $reminderDateTime');
-
     // Save the note first
     if (newNoteCubit.state.isNewNote) {
       await notesCubit.addNote(note);
-      print('🔔 Added new note');
     } else {
       await notesCubit.updateNote(note);
-      print('🔔 Updated existing note');
     }
 
     // Handle reminder scheduling after saving
@@ -94,44 +87,29 @@ class _NewOrEditNotePageState extends State<NewOrEditNotePage> {
       final reminderTime =
           DateTime.fromMicrosecondsSinceEpoch(reminderDateTime);
       final now = DateTime.now();
-      print('🔔 Reminder time: $reminderTime');
-      print('🔔 Current time: $now');
-      print('🔔 Is in future: ${reminderTime.isAfter(now)}');
 
-      // Only schedule if reminder is in the future
       if (reminderTime.isAfter(now)) {
         try {
-          // Find the saved note from ALL notes (not filtered)
           final savedNote = notesCubit.state.notes.firstWhere(
             (n) => n.dateCreated == note.dateCreated,
           );
-          print('🔔 Calling scheduleNoteReminder...');
           await NotificationService().scheduleNoteReminder(
             note: savedNote,
             scheduledTime: reminderTime,
           );
-          print('🔔 ✅ scheduleNoteReminder completed successfully');
-        } catch (e) {
-          print('🔔 ❌ ERROR scheduling notification: $e');
-          // TODO: Show error to user if notification scheduling fails
+        } catch (_) {
+          // Notification scheduling failed silently
         }
-      } else {
-        print('🔔 ⚠️ Reminder time is in the past, not scheduling');
       }
     } else {
-      print('🔔 No reminder set');
       if (!newNoteCubit.state.isNewNote) {
-        // Cancel any existing reminder if reminder was removed (only for existing notes)
         try {
           final savedNote = notesCubit.state.notes.firstWhere(
             (n) => n.dateCreated == note.dateCreated,
           );
-          print('🔔 Canceling existing reminder...');
           await NotificationService().cancelNoteReminder(savedNote);
-          print('🔔 ✅ Reminder canceled');
-        } catch (e) {
-          print('🔔 Error canceling reminder: $e');
-          // Ignore if there was no reminder to cancel
+        } catch (_) {
+          // No reminder to cancel
         }
       }
     }
@@ -157,7 +135,6 @@ class _NewOrEditNotePageState extends State<NewOrEditNotePage> {
         );
 
         if (shouldSave == null) return;
-
         if (!context.mounted) return;
 
         if (shouldSave) {
@@ -180,7 +157,6 @@ class _NewOrEditNotePageState extends State<NewOrEditNotePage> {
                       : FontAwesomeIcons.bookOpen,
                   onPressed: () {
                     newNoteCubit.setReadOnly(!state.readOnly);
-
                     if (state.readOnly) {
                       focusNode.requestFocus();
                     } else {

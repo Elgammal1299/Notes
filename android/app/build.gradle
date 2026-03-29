@@ -48,10 +48,7 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.smsayedi.awesome_notes"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
@@ -75,9 +72,12 @@ android {
         }
     }
 
+    // ✅ FIX: 16KB Page Size Support (Required for Android 15+ / Google Play)
+    // Setting useLegacyPackaging to false enables 16KB page alignment
+    // This is REQUIRED for Google Play starting 2025
     packagingOptions {
         jniLibs {
-            useLegacyPackaging = true
+            useLegacyPackaging = false
         }
     }
 }

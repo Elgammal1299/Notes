@@ -23,42 +23,22 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await MobileAds.instance.initialize();
 
-  print('🔔 ========== APP STARTING ==========');
-
   // Initialize Hive
   await Hive.initFlutter();
-  print('🔔 Hive initialized');
 
   // Register Hive Adapters
   Hive.registerAdapter(NoteAdapter());
   Hive.registerAdapter(TodoAdapter());
-  print('🔔 Hive adapters registered');
 
   // Initialize repositories
   final notesRepository = HiveNotesRepository();
   await notesRepository.init();
-  print('🔔 Notes repository initialized');
 
   final todosRepository = HiveTodosRepository();
   await todosRepository.init();
-  print('🔔 Todos repository initialized');
 
   // Initialize notification service
-  print('🔔 Initializing notification service...');
   await NotificationService().initialize();
-  print('🔔 Notification service initialized');
-
-  // Test notification immediately on app start
-  print('🔔 Testing immediate notification...');
-  try {
-    await NotificationService().showImmediateNotification(
-      title: 'تطبيق بدأ!',
-      body: 'التطبيق بدأ بنجاح - الإشعارات تعمل! 🎉',
-    );
-    print('🔔 ✅ Test notification sent successfully');
-  } catch (e) {
-    print('🔔 ❌ Test notification failed: $e');
-  }
 
   runApp(MyApp(
     notesRepository: notesRepository,

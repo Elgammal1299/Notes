@@ -18,63 +18,46 @@ class TodosCubit extends Cubit<TodosState> {
     try {
       final todos = await _repository.getAllTodos();
       emit(state.copyWith(todos: todos));
-    } catch (e) {
-      print('Error loading todos: $e');
-    }
+    } catch (_) {}
   }
 
   /// Add a new todo
   Future<void> addTodo(Todo todo) async {
     try {
       await _repository.addTodo(todo);
-
-      // Schedule notification if reminder is set
       if (todo.reminderDateTime != null) {
         await _scheduleNotification(todo);
       }
-
       await loadTodos();
-    } catch (e) {
-      print('Error adding todo: $e');
-    }
+    } catch (_) {}
   }
 
   /// Update an existing todo
   Future<void> updateTodo(Todo todo) async {
     try {
       await _repository.updateTodo(todo);
-
-      // Handle notification scheduling
       if (todo.reminderDateTime != null) {
         await _scheduleNotification(todo);
       } else {
         await _notificationService.cancelNoteReminder(
-          // Convert todo to note for cancellation (uses same notification ID logic)
           _todoToNoteForNotification(todo),
         );
       }
-
       await loadTodos();
-    } catch (e) {
-      print('Error updating todo: $e');
-    }
+    } catch (_) {}
   }
 
   /// Delete a todo
   Future<void> deleteTodo(Todo todo) async {
     try {
-      // Cancel notification if exists
       if (todo.reminderDateTime != null) {
         await _notificationService.cancelNoteReminder(
           _todoToNoteForNotification(todo),
         );
       }
-
       await _repository.deleteTodo(todo);
       await loadTodos();
-    } catch (e) {
-      print('Error deleting todo: $e');
-    }
+    } catch (_) {}
   }
 
   /// Toggle todo completion status
@@ -82,9 +65,7 @@ class TodosCubit extends Cubit<TodosState> {
     try {
       final updatedTodo = todo.copyWith(isCompleted: !todo.isCompleted);
       await updateTodo(updatedTodo);
-    } catch (e) {
-      print('Error toggling todo completion: $e');
-    }
+    } catch (_) {}
   }
 
   /// Toggle subtask completion status
@@ -94,15 +75,11 @@ class TodosCubit extends Cubit<TodosState> {
           subtaskIndex >= todo.subtasksCompleted!.length) {
         return;
       }
-
       final updatedCompleted = List<bool>.from(todo.subtasksCompleted!);
       updatedCompleted[subtaskIndex] = !updatedCompleted[subtaskIndex];
-
       final updatedTodo = todo.copyWith(subtasksCompleted: updatedCompleted);
       await updateTodo(updatedTodo);
-    } catch (e) {
-      print('Error toggling subtask: $e');
-    }
+    } catch (_) {}
   }
 
   /// Set filter for todos
@@ -137,11 +114,12 @@ class TodosCubit extends Cubit<TodosState> {
     if (state.searchTerm.isNotEmpty) {
       filtered = filtered.where((todo) {
         final titleMatch = todo.title.toLowerCase().contains(
-          state.searchTerm.toLowerCase(),
-        );
+              state.searchTerm.toLowerCase(),
+            );
         final descriptionMatch = todo.description?.toLowerCase().contains(
-          state.searchTerm.toLowerCase(),
-        ) ?? false;
+                  state.searchTerm.toLowerCase(),
+                ) ??
+            false;
         return titleMatch || descriptionMatch;
       }).toList();
     }
@@ -161,7 +139,6 @@ class TodosCubit extends Cubit<TodosState> {
     // Apply status filter
     switch (state.filter) {
       case TodoFilter.all:
-        // No additional filtering
         break;
       case TodoFilter.active:
         filtered = filtered.where((todo) => !todo.isCompleted).toList();
@@ -179,24 +156,20 @@ class TodosCubit extends Cubit<TodosState> {
         break;
     }
 
-    // Sort by priority (high to low) and then by due date
+    // Sort: completed → priority → due date → creation date
     filtered.sort((a, b) {
-      // Completed todos go to bottom
       if (a.isCompleted && !b.isCompleted) return 1;
       if (!a.isCompleted && b.isCompleted) return -1;
 
-      // Sort by priority (high priority first)
       final priorityCompare = b.priority.compareTo(a.priority);
       if (priorityCompare != 0) return priorityCompare;
 
-      // Sort by due date (earlier dates first)
       if (a.dueDate != null && b.dueDate != null) {
         return a.dueDate!.compareTo(b.dueDate!);
       }
       if (a.dueDate != null) return -1;
       if (b.dueDate != null) return 1;
 
-      // Finally sort by creation date (newest first)
       return b.dateCreated.compareTo(a.dateCreated);
     });
 
@@ -226,29 +199,19 @@ class TodosCubit extends Cubit<TodosState> {
   Future<void> _scheduleNotification(Todo todo) async {
     try {
       if (todo.reminderDateTime == null) return;
-
       final scheduledTime = DateTime.fromMicrosecondsSinceEpoch(
         todo.reminderDateTime!,
       );
-
-      // Create a temporary Note object for notification service
-      // (NotificationService uses Note model, but we can reuse it for todos)
       final noteForNotification = _todoToNoteForNotification(todo);
-
       await _notificationService.scheduleNoteReminder(
         note: noteForNotification,
         scheduledTime: scheduledTime,
       );
-    } catch (e) {
-      print('Error scheduling notification for todo: $e');
-    }
+    } catch (_) {}
   }
 
   /// Convert Todo to a temporary Note object for notification purposes
-  /// (NotificationService uses Note model's dateCreated for notification ID)
   dynamic _todoToNoteForNotification(Todo todo) {
-    // We need to import Note model at the top of the file
-    // For now, create a simple object with the properties NotificationService needs
     return _MockNoteForNotification(
       title: todo.title,
       content: todo.description ?? 'Todo reminder',
@@ -264,14 +227,11 @@ class TodosCubit extends Cubit<TodosState> {
         await _repository.deleteTodo(todo);
       }
       await loadTodos();
-    } catch (e) {
-      print('Error clearing completed todos: $e');
-    }
+    } catch (_) {}
   }
 }
 
 /// Mock Note class for notification purposes
-/// This allows us to reuse NotificationService without modifying it
 class _MockNoteForNotification {
   final String title;
   final String? content;
