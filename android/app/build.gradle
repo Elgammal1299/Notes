@@ -50,7 +50,7 @@ android {
     defaultConfig {
         applicationId "com.smsayedi.awesome_notes"
         minSdkVersion flutter.minSdkVersion
-        targetSdkVersion flutter.targetSdkVersion
+        targetSdkVersion 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
 
@@ -81,7 +81,7 @@ android {
     // This is REQUIRED for Google Play starting 2025
     packagingOptions {
         jniLibs {
-            useLegacyPackaging = false
+            useLegacyPackaging = true
         }
     }
 }
