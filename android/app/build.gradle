@@ -76,12 +76,9 @@ android {
         }
     }
 
-    // ✅ FIX: 16KB Page Size Support (Required for Android 15+ / Google Play)
-    // Setting useLegacyPackaging to false enables 16KB page alignment
-    // This is REQUIRED for Google Play starting 2025
-    packagingOptions {
+    packaging {
         jniLibs {
-            useLegacyPackaging = true
+            useLegacyPackaging = false
         }
     }
 }
