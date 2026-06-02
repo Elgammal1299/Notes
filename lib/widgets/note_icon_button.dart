@@ -11,7 +11,7 @@ class NoteIconButton extends StatelessWidget {
     super.key,
   });
 
-  final IconData icon;
+  final dynamic icon;
   final double? size;
   final VoidCallback? onPressed;
 
@@ -19,7 +19,7 @@ class NoteIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: onPressed,
-      icon: FaIcon(icon),
+      icon: icon is IconData ? Icon(icon) : FaIcon(icon),
       padding: EdgeInsets.zero,
       visualDensity: VisualDensity.compact,
       constraints: const BoxConstraints(),

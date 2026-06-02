@@ -10,14 +10,14 @@ class NoteIconButtonOutlined extends StatelessWidget {
     super.key,
   });
 
-  final IconData icon;
+  final dynamic icon;
   final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: onPressed,
-      icon: FaIcon(icon),
+      icon: icon is IconData ? Icon(icon) : FaIcon(icon),
       style: IconButton.styleFrom(
         backgroundColor: primary,
         foregroundColor: white,

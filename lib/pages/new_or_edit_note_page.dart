@@ -121,8 +121,10 @@ class _NewOrEditNotePageState extends State<NewOrEditNotePage> {
 
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) async {
-        if (didPop) return;
+      onPopInvokedWithResult: (bool didPop, dynamic result) async {
+        if (didPop) {
+          return;
+        }
 
         if (!newNoteCubit.canSaveNote()) {
           Navigator.pop(context);
@@ -223,32 +225,8 @@ class _NewOrEditNotePageState extends State<NewOrEditNotePage> {
                   builder: (context, state) => Column(
                     children: [
                       Expanded(
-                        child: QuillProvider(
-                          configurations: QuillConfigurations(
-                            controller: quillController,
-                          ),
-                          child: QuillEditor.basic(
-                            configurations: QuillEditorConfigurations(
-                              placeholder: l10n.noteHere,
-                              readOnly: state.readOnly,
-                              customStyles: DefaultStyles(
-                                paragraph: DefaultTextBlockStyle(
-                                  TextStyle(
-                                    fontSize: 16,
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge
-                                        ?.color,
-                                    height: 1.15,
-                                  ),
-                                  const VerticalSpacing(16, 0),
-                                  const VerticalSpacing(0, 0),
-                                  null,
-                                ),
-                              ),
-                            ),
-                            focusNode: focusNode,
-                          ),
+                        child: QuillEditor.basic(
+                          controller: quillController,
                         ),
                       ),
                       if (!state.readOnly)

@@ -29,7 +29,7 @@ class SettingsDrawer extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                const Icon(
+                const FaIcon(
                   FontAwesomeIcons.noteSticky,
                   size: 48,
                   color: Colors.white,
@@ -63,7 +63,7 @@ class SettingsDrawer extends StatelessWidget {
               return SwitchListTile(
                 title: Text(l10n.theme),
                 subtitle: Text(isDark ? l10n.darkMode : l10n.lightMode),
-                secondary: Icon(
+                secondary: FaIcon(
                   isDark ? FontAwesomeIcons.moon : FontAwesomeIcons.sun,
                   color: Theme.of(context).iconTheme.color,
                 ),
@@ -81,7 +81,7 @@ class SettingsDrawer extends StatelessWidget {
               return SwitchListTile(
                 title: Text(l10n.language),
                 subtitle: Text(isArabic ? 'العربية' : 'English'),
-                secondary: const Icon(FontAwesomeIcons.language),
+                secondary: const FaIcon(FontAwesomeIcons.language),
                 value: isArabic,
                 onChanged: (value) {
                   context.read<LanguageCubit>().toggleLanguage();

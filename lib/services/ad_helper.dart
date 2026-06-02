@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AdHelper {
@@ -56,7 +57,7 @@ class AdHelper {
           ad.show();
         },
         onAdFailedToLoad: (err) {
-          print('InterstitialAd failed to load: $err');
+          debugPrint('InterstitialAd failed to load: $err.');
         },
       ),
     );
@@ -83,7 +84,7 @@ class AdHelper {
           );
         },
         onAdFailedToLoad: (err) {
-          print('RewardedAd failed to load: $err');
+          debugPrint('RewardedAd failed to load: $err');
           // Still allow the action if ad fails
           onUserEarnedReward();
         },

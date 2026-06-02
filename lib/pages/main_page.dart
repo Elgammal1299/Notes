@@ -3,7 +3,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../core/constants.dart';
 import '../l10n/app_localizations.dart';
-import '../services/notification_service.dart';
 import '../widgets/settings_drawer.dart';
 import '../widgets/banner_ad_widget.dart';
 import 'notes_page.dart';
@@ -60,11 +59,11 @@ class _MainPageState extends State<MainPage> {
         unselectedItemColor: Colors.grey,
         items: [
           BottomNavigationBarItem(
-            icon: const Icon(FontAwesomeIcons.noteSticky),
+            icon: const FaIcon(FontAwesomeIcons.noteSticky),
             label: l10n.notes,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(FontAwesomeIcons.listCheck),
+            icon: const FaIcon(FontAwesomeIcons.listCheck),
             label: l10n.todos,
           ),
         ],

@@ -259,7 +259,7 @@ class _AddOrEditTodoPageState extends State<AddOrEditTodoPage> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      prefixIcon: const Icon(FontAwesomeIcons.heading),
+                      prefixIcon: const FaIcon(FontAwesomeIcons.heading),
                     ),
                     textCapitalization: TextCapitalization.sentences,
                     onChanged: (_) => setState(() {}),
@@ -275,7 +275,7 @@ class _AddOrEditTodoPageState extends State<AddOrEditTodoPage> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      prefixIcon: const Icon(FontAwesomeIcons.alignLeft),
+                      prefixIcon: const FaIcon(FontAwesomeIcons.alignLeft),
                     ),
                     maxLines: 3,
                     textCapitalization: TextCapitalization.sentences,
@@ -290,17 +290,17 @@ class _AddOrEditTodoPageState extends State<AddOrEditTodoPage> {
                       ButtonSegment(
                         value: TodoPriority.low,
                         label: Text(l10n.lowPriority),
-                        icon: const Icon(FontAwesomeIcons.arrowDown, size: 16),
+                        icon: const FaIcon(FontAwesomeIcons.arrowDown, size: 16),
                       ),
                       ButtonSegment(
                         value: TodoPriority.medium,
                         label: Text(l10n.mediumPriority),
-                        icon: const Icon(FontAwesomeIcons.equals, size: 16),
+                        icon: const FaIcon(FontAwesomeIcons.equals, size: 16),
                       ),
                       ButtonSegment(
                         value: TodoPriority.high,
                         label: Text(l10n.highPriority),
-                        icon: const Icon(FontAwesomeIcons.arrowUp, size: 16),
+                        icon: const FaIcon(FontAwesomeIcons.arrowUp, size: 16),
                       ),
                     ],
                     selected: {_selectedPriority},
@@ -324,7 +324,7 @@ class _AddOrEditTodoPageState extends State<AddOrEditTodoPage> {
                         label: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(_getCategoryIcon(category), size: 16),
+                            FaIcon(_getCategoryIcon(category), size: 16),
                             const SizedBox(width: 8),
                             Text(_getCategoryName(category)),
                           ],
@@ -355,7 +355,7 @@ class _AddOrEditTodoPageState extends State<AddOrEditTodoPage> {
                       ),
                       child: Row(
                         children: [
-                          const Icon(FontAwesomeIcons.calendar, color: primary),
+                          const FaIcon(FontAwesomeIcons.calendar, color: primary),
                           const SizedBox(width: 16),
                           Expanded(
                             child: Text(
@@ -370,7 +370,7 @@ class _AddOrEditTodoPageState extends State<AddOrEditTodoPage> {
                           ),
                           if (_dueDate != null)
                             IconButton(
-                              icon: const Icon(FontAwesomeIcons.xmark, size: 16),
+                              icon: const FaIcon(FontAwesomeIcons.xmark, size: 16),
                               onPressed: () {
                                 setState(() {
                                   _dueDate = null;
@@ -397,7 +397,7 @@ class _AddOrEditTodoPageState extends State<AddOrEditTodoPage> {
                       ),
                       child: Row(
                         children: [
-                          const Icon(FontAwesomeIcons.bell, color: primary),
+                          const FaIcon(FontAwesomeIcons.bell, color: primary),
                           const SizedBox(width: 16),
                           Expanded(
                             child: Text(
@@ -415,7 +415,7 @@ class _AddOrEditTodoPageState extends State<AddOrEditTodoPage> {
                           ),
                           if (_reminderDateTime != null)
                             IconButton(
-                              icon: const Icon(FontAwesomeIcons.xmark, size: 16),
+                              icon: const FaIcon(FontAwesomeIcons.xmark, size: 16),
                               onPressed: () {
                                 setState(() {
                                   _reminderDateTime = null;
@@ -452,7 +452,7 @@ class _AddOrEditTodoPageState extends State<AddOrEditTodoPage> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        prefixIcon: const Icon(FontAwesomeIcons.rotate),
+                        prefixIcon: const FaIcon(FontAwesomeIcons.rotate),
                       ),
                       hint: Text(l10n.selectPattern),
                       items: [
@@ -482,7 +482,7 @@ class _AddOrEditTodoPageState extends State<AddOrEditTodoPage> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            prefixIcon: const Icon(FontAwesomeIcons.listCheck),
+                            prefixIcon: const FaIcon(FontAwesomeIcons.listCheck),
                           ),
                           textCapitalization: TextCapitalization.sentences,
                           onSubmitted: (_) => _addSubtask(),
@@ -491,7 +491,7 @@ class _AddOrEditTodoPageState extends State<AddOrEditTodoPage> {
                       const SizedBox(width: 8),
                       IconButton.filled(
                         onPressed: _addSubtask,
-                        icon: const Icon(FontAwesomeIcons.plus),
+                        icon: const FaIcon(FontAwesomeIcons.plus),
                         style: IconButton.styleFrom(
                           backgroundColor: primary,
                           foregroundColor: Colors.white,
@@ -522,7 +522,7 @@ class _AddOrEditTodoPageState extends State<AddOrEditTodoPage> {
                             ),
                           ),
                           trailing: IconButton(
-                            icon: const Icon(FontAwesomeIcons.trash, size: 16),
+                            icon: const FaIcon(FontAwesomeIcons.trash, size: 16),
                             onPressed: () => _removeSubtask(index),
                             color: Colors.red,
                           ),
@@ -540,7 +540,7 @@ class _AddOrEditTodoPageState extends State<AddOrEditTodoPage> {
     );
   }
 
-  IconData _getCategoryIcon(TodoCategory category) {
+  FaIconData _getCategoryIcon(TodoCategory category) {
     switch (category) {
       case TodoCategory.personal:
         return FontAwesomeIcons.user;

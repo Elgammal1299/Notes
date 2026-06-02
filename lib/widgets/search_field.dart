@@ -46,7 +46,7 @@ class _SearchFieldState extends State<SearchField> {
       decoration: InputDecoration(
         hintText: l10n.search,
         hintStyle: const TextStyle(fontSize: 12),
-        prefixIcon: const Icon(FontAwesomeIcons.magnifyingGlass, size: 16),
+        prefixIcon: const FaIcon(FontAwesomeIcons.magnifyingGlass, size: 16),
         suffixIcon: ListenableBuilder(
           listenable: searchController,
           builder: (context, clearButton) => searchController.text.isNotEmpty
@@ -56,7 +56,7 @@ class _SearchFieldState extends State<SearchField> {
             onTap: () {
               searchController.clear();
             },
-            child: const Icon(FontAwesomeIcons.circleXmark),
+            child: const FaIcon(FontAwesomeIcons.circleXmark),
           ),
         ),
         fillColor: white,

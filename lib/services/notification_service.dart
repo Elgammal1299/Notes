@@ -48,7 +48,7 @@ class NotificationService {
 
     // Initialize the plugin
     await _notificationsPlugin.initialize(
-      initSettings,
+      settings: initSettings,
       onDidReceiveNotificationResponse: _onNotificationTapped,
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
@@ -130,14 +130,12 @@ class NotificationService {
 
     // Schedule the notification
     await _notificationsPlugin.zonedSchedule(
-      notificationId,
-      note.title ?? 'Reminder',
-      note.content ?? 'You have a note reminder',
-      scheduledDate,
-      notificationDetails,
+      id: notificationId,
+      title: note.title ?? 'Reminder',
+      body: note.content ?? 'You have a note reminder',
+      scheduledDate: scheduledDate,
+      notificationDetails: notificationDetails,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
       payload: note.dateCreated.toString(),
     );
   }
@@ -149,7 +147,7 @@ class NotificationService {
     }
 
     final int notificationId = note.dateCreated.hashCode;
-    await _notificationsPlugin.cancel(notificationId);
+    await _notificationsPlugin.cancel(id: notificationId);
   }
 
   /// Show an immediate notification
@@ -184,10 +182,10 @@ class NotificationService {
     );
 
     await _notificationsPlugin.show(
-      DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      title,
-      body,
-      notificationDetails,
+      id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      title: title,
+      body: body,
+      notificationDetails: notificationDetails,
     );
   }
 

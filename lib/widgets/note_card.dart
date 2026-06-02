@@ -53,7 +53,7 @@ class NoteCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: primary.withOpacity(0.5),
+              color: primary.withValues(alpha: 0.5),
               offset: const Offset(4, 4),
             ),
           ],
@@ -129,19 +129,20 @@ class NoteCard extends StatelessWidget {
                         false;
 
                     if (shouldDelete && context.mounted) {
+                      final notesCubit = context.read<NotesCubit>();
                       // Cancel any scheduled reminder before deleting
                       try {
                         await NotificationService().cancelNoteReminder(note);
                       } catch (e) {
                         // Ignore if there was no reminder to cancel
                       }
-                      await context.read<NotesCubit>().deleteNote(note);
+                      await notesCubit.deleteNote(note);
                     }
                   },
                   child: FaIcon(
                     FontAwesomeIcons.trash,
                     color:
-                        Theme.of(context).iconTheme.color?.withOpacity(0.6) ??
+                        Theme.of(context).iconTheme.color?.withValues(alpha: 0.6) ??
                             gray500,
                     size: 16,
                   ),

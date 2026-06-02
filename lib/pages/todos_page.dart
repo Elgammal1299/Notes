@@ -24,7 +24,7 @@ class TodosPage extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: const Icon(FontAwesomeIcons.list, color: primary),
+                leading: const FaIcon(FontAwesomeIcons.list, color: primary),
                 title: Text(l10n.all),
                 onTap: () {
                   cubit.setFilter(TodoFilter.all);
@@ -32,7 +32,7 @@ class TodosPage extends StatelessWidget {
                 },
               ),
               ListTile(
-                leading: const Icon(FontAwesomeIcons.circleCheck, color: primary),
+                leading: const FaIcon(FontAwesomeIcons.circleCheck, color: primary),
                 title: Text(l10n.active),
                 onTap: () {
                   cubit.setFilter(TodoFilter.active);
@@ -40,7 +40,7 @@ class TodosPage extends StatelessWidget {
                 },
               ),
               ListTile(
-                leading: const Icon(FontAwesomeIcons.check, color: primary),
+                leading: const FaIcon(FontAwesomeIcons.check, color: primary),
                 title: Text(l10n.completed),
                 onTap: () {
                   cubit.setFilter(TodoFilter.completed);
@@ -48,7 +48,7 @@ class TodosPage extends StatelessWidget {
                 },
               ),
               ListTile(
-                leading: const Icon(FontAwesomeIcons.triangleExclamation, color: primary),
+                leading: const FaIcon(FontAwesomeIcons.triangleExclamation, color: primary),
                 title: Text(l10n.overdue),
                 onTap: () {
                   cubit.setFilter(TodoFilter.overdue);
@@ -74,7 +74,7 @@ class TodosPage extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: const Icon(FontAwesomeIcons.asterisk, color: primary),
+                leading: const FaIcon(FontAwesomeIcons.asterisk, color: primary),
                 title: Text(l10n.allCategories),
                 onTap: () {
                   cubit.setCategoryFilter(null);
@@ -84,7 +84,7 @@ class TodosPage extends StatelessWidget {
               const Divider(),
               ...TodoCategory.values.map((category) {
                 return ListTile(
-                  leading: Icon(_getCategoryIcon(category), color: primary),
+                  leading: FaIcon(_getCategoryIcon(category), color: primary),
                   title: Text(_getCategoryName(context, category)),
                   onTap: () {
                     cubit.setCategoryFilter(category);
@@ -122,7 +122,7 @@ class TodosPage extends StatelessWidget {
                         onPressed: () {
                           _showFilterMenu(context);
                         },
-                        icon: const Icon(FontAwesomeIcons.filter, size: 16),
+                        icon: const FaIcon(FontAwesomeIcons.filter, size: 16),
                         label: Text(_getFilterName(context, state.filter)),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: primary,
@@ -137,7 +137,7 @@ class TodosPage extends StatelessWidget {
                         onPressed: () {
                           _showCategoryMenu(context);
                         },
-                        icon: const Icon(FontAwesomeIcons.tag, size: 16),
+                        icon: const FaIcon(FontAwesomeIcons.tag, size: 16),
                         label: Text(
                           state.categoryFilter != null
                               ? _getCategoryName(context, state.categoryFilter!)
@@ -166,7 +166,7 @@ class TodosPage extends StatelessWidget {
                           onDeleted: () {
                             cubit.setFilter(TodoFilter.all);
                           },
-                          deleteIcon: const Icon(FontAwesomeIcons.xmark, size: 14),
+                          deleteIcon: const FaIcon(FontAwesomeIcons.xmark, size: 14),
                         ),
                       if (state.categoryFilter != null)
                         Chip(
@@ -174,7 +174,7 @@ class TodosPage extends StatelessWidget {
                           onDeleted: () {
                             cubit.setCategoryFilter(null);
                           },
-                          deleteIcon: const Icon(FontAwesomeIcons.xmark, size: 14),
+                          deleteIcon: const FaIcon(FontAwesomeIcons.xmark, size: 14),
                         ),
                     ],
                   ),
@@ -186,7 +186,7 @@ class TodosPage extends StatelessWidget {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
+                            FaIcon(
                               FontAwesomeIcons.listCheck,
                               size: 64,
                               color: Colors.grey[300],
@@ -226,12 +226,12 @@ class TodosPage extends StatelessWidget {
           );
         },
         backgroundColor: primary,
-        child: const Icon(FontAwesomeIcons.plus, color: Colors.white),
+        child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white),
       ),
     );
   }
 
-  IconData _getCategoryIcon(TodoCategory category) {
+  FaIconData _getCategoryIcon(TodoCategory category) {
     switch (category) {
       case TodoCategory.personal:
         return FontAwesomeIcons.user;
@@ -388,7 +388,7 @@ class _TodoItemCard extends StatelessWidget {
                       label: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(FontAwesomeIcons.bell, size: 10),
+                          const FaIcon(FontAwesomeIcons.bell, size: 10),
                           const SizedBox(width: 4),
                           Text(
                             l10n.reminder,
@@ -405,7 +405,7 @@ class _TodoItemCard extends StatelessWidget {
                       label: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(FontAwesomeIcons.rotate, size: 10),
+                          const FaIcon(FontAwesomeIcons.rotate, size: 10),
                           const SizedBox(width: 4),
                           Text(
                             todo.recurringPattern ?? l10n.recurring,
@@ -423,7 +423,7 @@ class _TodoItemCard extends StatelessWidget {
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    Icon(
+                    FaIcon(
                       FontAwesomeIcons.listCheck,
                       size: 14,
                       color: Colors.grey[600],
@@ -463,7 +463,7 @@ class _PriorityIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color color;
-    IconData icon;
+    FaIconData icon;
 
     switch (priority) {
       case TodoPriority.low:
@@ -486,7 +486,7 @@ class _PriorityIndicator extends StatelessWidget {
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Icon(icon, size: 16, color: color),
+      child: FaIcon(icon, size: 16, color: color),
     );
   }
 }
@@ -500,7 +500,7 @@ class _CategoryChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    IconData icon;
+    FaIconData icon;
     String label;
 
     switch (category) {
@@ -527,7 +527,7 @@ class _CategoryChip extends StatelessWidget {
     }
 
     return Chip(
-      avatar: Icon(icon, size: 14),
+      avatar: FaIcon(icon, size: 14),
       label: Text(label, style: const TextStyle(fontSize: 11)),
       padding: EdgeInsets.zero,
       visualDensity: VisualDensity.compact,
@@ -579,7 +579,7 @@ class _DueDateChip extends StatelessWidget {
     }
 
     return Chip(
-      avatar: Icon(
+      avatar: FaIcon(
         FontAwesomeIcons.calendar,
         size: 14,
         color: textColor,

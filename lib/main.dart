@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_quill/src/l10n/generated/quill_localizations.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -75,7 +75,7 @@ class MyApp extends StatelessWidget {
                 locale: languageState.locale,
                 localizationsDelegates: [
                   AppLocalizations.delegate,
-                  ...FlutterQuillLocalizations.localizationsDelegates,
+                  FlutterQuillLocalizations.delegate,
                 ],
                 supportedLocales: AppLocalizations.supportedLocales,
                 themeMode: themeState.themeMode,
